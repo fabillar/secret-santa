@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Family Secret Santa</title>
+  <meta name="description" content="Claim your name and spin to find out who you're buying for.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='12' width='24' height='17' rx='2' fill='%23b3253f'/%3E%3Crect x='2' y='8' width='28' height='6' rx='2' fill='%2316423c'/%3E%3Crect x='14' y='8' width='4' height='21' fill='%23c9a227'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Young+Serif&display=swap">
+  <link rel="stylesheet" href="/assets/styles.css">
+  <script type="module" src="/assets/app.js"></script>
+</head>
+<body>
+  <div class="band" aria-hidden="true"></div>
+  <main class="page">
+    <header>
+      <h1 id="event-name">Family Secret Santa</h1>
+      <dl class="details" id="details"></dl>
+      <p class="notes hidden" id="notes"></p>
+    </header>
+
+    <section id="mine-section" class="hidden" aria-labelledby="mine-title">
+      <h2 id="mine-title">Your names</h2>
+      <div class="tags" id="mine"></div>
+    </section>
+
+    <section aria-labelledby="claim-title">
+      <h2 id="claim-title">Find your name</h2>
+      <p class="lede" id="claim-lede">Tap your own name to claim it. Parents can claim their kids' names on the same phone.</p>
+      <ol class="steps" id="steps">
+        <li>Claim your name below.</li>
+        <li>Wait for the organizer to start the drawing.</li>
+        <li>Spin the wheel to see who you're buying for.</li>
+      </ol>
+      <div class="field search" id="search-wrap">
+        <label for="search">Search names</label>
+        <input id="search" type="search" autocomplete="off" placeholder="Start typing a name">
+      </div>
+      <div id="names" aria-live="polite"><p class="hint">Loading the family list…</p></div>
+    </section>
+
+    <footer>
+      <button type="button" id="recover-open">Claimed your name on another device?</button>
+      <a href="/admin">Organizer</a>
+    </footer>
+  </main>
+
+  <!-- Confirm claim -->
+  <dialog id="claim-dialog" aria-labelledby="claim-dialog-title">
+    <h2 id="claim-dialog-title">Claim this name?</h2>
+    <p id="claim-dialog-text"></p>
+    <p class="hint">Only claim your own name, or a child's you're spinning for. Once claimed, nobody else can take it.</p>
+    <p class="error hidden" id="claim-error" role="alert"></p>
+    <div class="dialog-actions">
+      <button type="button" class="ghost" data-close>Cancel</button>
+      <button type="button" class="primary" id="claim-confirm">Claim name</button>
+    </div>
+  </dialog>
+
+  <!-- Recovery code shown once -->
+  <dialog id="code-dialog" aria-labelledby="code-dialog-title">
+    <h2 id="code-dialog-title">Save your recovery code</h2>
+    <p>This phone or computer now remembers <strong id="code-name"></strong>. If you switch devices or clear your browser, this code gets you back in. It is only shown once.</p>
+    <p class="code" id="code-value"></p>
+    <div class="dialog-actions">
+      <button type="button" class="ghost" id="code-copy">Copy code</button>
+      <button type="button" data-close>I saved it</button>
+    </div>
+  </dialog>
+
+  <!-- Recover on a new device -->
+  <dialog id="recover-dialog" aria-labelledby="recover-dialog-title">
+    <h2 id="recover-dialog-title">Use a recovery code</h2>
+    <form id="recover-form">
+      <div class="field">
+        <label for="recover-code">Recovery code</label>
+        <input id="recover-code" autocomplete="off" spellcheck="false" required>
+      </div>
+      <p class="error hidden" id="recover-error" role="alert"></p>
+      <div class="dialog-actions">
+        <button type="button" class="ghost" data-close>Cancel</button>
+        <button type="submit">Add to this device</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Wheel -->
+  <dialog id="wheel-dialog" class="wheel-dialog" aria-labelledby="wheel-title">
+    <h2 id="wheel-title">Spin for <span id="wheel-for"></span></h2>
+    <div class="wheel-wrap">
+      <canvas id="wheel" aria-hidden="true"></canvas>
+      <div class="pointer" aria-hidden="true"></div>
+    </div>
+    <div class="reveal" id="reveal" aria-live="assertive"></div>
+    <div class="dialog-actions">
+      <button type="button" class="ghost" id="wheel-close" data-close>Close</button>
+      <button type="button" class="primary" id="wheel-spin">Spin the wheel</button>
+    </div>
+  </dialog>
+</body>
+</html>

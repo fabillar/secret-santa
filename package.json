@@ -1,0 +1,17 @@
+{
+  "name": "family-secret-santa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Family Secret Santa with separate Adult/Child drawings. Static HTML frontend + Vercel Serverless Functions + Upstash Redis.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vercel dev",
+    "test": "node --test tests/matching.test.js"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.34.0"
+  }
+}

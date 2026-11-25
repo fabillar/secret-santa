@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Organizer | Family Secret Santa</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='12' width='24' height='17' rx='2' fill='%23b3253f'/%3E%3Crect x='2' y='8' width='28' height='6' rx='2' fill='%2316423c'/%3E%3Crect x='14' y='8' width='4' height='21' fill='%23c9a227'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Young+Serif&display=swap">
+  <link rel="stylesheet" href="/assets/styles.css">
+  <script type="module" src="/assets/admin.js"></script>
+</head>
+<body>
+  <div class="band" aria-hidden="true"></div>
+
+  <!-- Login -->
+  <main class="page" id="login-view" hidden>
+    <h1>Organizer</h1>
+    <p class="lede">Sign in to set up the family list and run the drawings.</p>
+    <form id="login-form" class="section">
+      <div class="field">
+        <label for="password">Organizer password</label>
+        <input id="password" type="password" autocomplete="current-password" required>
+      </div>
+      <p class="error hidden" id="login-error" role="alert"></p>
+      <button type="submit" class="primary">Sign in</button>
+    </form>
+    <footer><a href="/">Back to the participant page</a></footer>
+  </main>
+
+  <!-- Dashboard -->
+  <main class="page wide" id="app-view" hidden>
+    <div class="admin-head">
+      <h1 id="admin-title">Organizer</h1>
+      <div class="row">
+        <a class="btn ghost" href="/" target="_blank" rel="noopener">Open participant page</a>
+        <button type="button" class="ghost" id="logout">Sign out</button>
+      </div>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" id="tab-family" aria-controls="panel-family" aria-selected="true">Family</button>
+      <button type="button" role="tab" id="tab-drawings" aria-controls="panel-drawings" aria-selected="false">Drawings</button>
+      <button type="button" role="tab" id="tab-event" aria-controls="panel-event" aria-selected="false">Event details</button>
+    </div>
+
+    <!-- Family -->
+    <div class="panel" id="panel-family" role="tabpanel" aria-labelledby="tab-family">
+      <div class="grid-2">
+        <div>
+          <h2>Households</h2>
+          <p class="hint">People in the same household never draw each other.</p>
+          <form id="household-form" class="row">
+            <div class="field">
+              <label for="household-name">New household</label>
+              <input id="household-name" maxlength="60" placeholder="e.g. The Garcias" required>
+            </div>
+            <div class="field"><button type="submit">Add household</button></div>
+          </form>
+          <div class="table-scroll"><table id="households-table"></table></div>
+        </div>
+        <div>
+          <h2>People</h2>
+          <form id="member-form">
+            <div class="row">
+              <div class="field">
+                <label for="member-name">Name</label>
+                <input id="member-name" maxlength="60" placeholder="e.g. Ana Garcia" required>
+              </div>
+              <div class="field">
+                <label for="member-household">Household</label>
+                <select id="member-household" required></select>
+              </div>
+              <div class="field">
+                <label for="member-category">Drawing</label>
+                <select id="member-category">
+                  <option value="adult">Adults</option>
+                  <option value="child">Kids</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit">Add person</button>
+          </form>
+          <div class="table-scroll section"><table id="members-table"></table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drawings -->
+    <div class="panel" id="panel-drawings" role="tabpanel" aria-labelledby="tab-drawings" hidden>
+      <p class="lede">Each drawing is made on the server, checked against the household rules and saved before anyone can spin. Here you can see who has spun, but never who drew whom.</p>
+      <div id="pools"></div>
+    </div>
+
+    <!-- Event -->
+    <div class="panel" id="panel-event" role="tabpanel" aria-labelledby="tab-event" hidden>
+      <form id="settings-form">
+        <div class="field">
+          <label for="s-eventName">Event name</label>
+          <input id="s-eventName" maxlength="80" required>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="s-exchangeDate">Exchange date</label>
+            <input id="s-exchangeDate" type="date">
+          </div>
+          <div class="field">
+            <label for="s-location">Location</label>
+            <input id="s-location" maxlength="120" placeholder="e.g. Grandma's house">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="s-adultBudget">Adult gift budget</label>
+            <input id="s-adultBudget" maxlength="40" placeholder="e.g. $50">
+          </div>
+          <div class="field">
+            <label for="s-childBudget">Kid gift budget</label>
+            <input id="s-childBudget" maxlength="40" placeholder="e.g. $30">
+          </div>
+        </div>
+        <div class="field">
+          <label for="s-notes">Notes for everyone</label>
+          <textarea id="s-notes" rows="4" maxlength="1000" placeholder="Wish lists, dress code, what to bring…"></textarea>
+        </div>
+        <button type="submit" class="primary">Save event details</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Edit person -->
+  <dialog id="edit-dialog" aria-labelledby="edit-title">
+    <h2 id="edit-title">Edit person</h2>
+    <form id="edit-form">
+      <div class="field">
+        <label for="edit-name">Name</label>
+        <input id="edit-name" maxlength="60" required>
+      </div>
+      <div class="field">
+        <label for="edit-household">Household</label>
+        <select id="edit-household"></select>
+      </div>
+      <div class="field">
+        <label for="edit-category">Drawing</label>
+        <select id="edit-category">
+          <option value="adult">Adults</option>
+          <option value="child">Kids</option>
+        </select>
+      </div>
+      <p class="hint">While a drawing is active you can fix name spelling, but moving someone to another household or drawing needs that drawing reset first.</p>
+      <p class="error hidden" id="edit-error" role="alert"></p>
+      <div class="dialog-actions">
+        <button type="button" class="ghost" data-close>Cancel</button>
+        <button type="submit">Save changes</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Reset drawing -->
+  <dialog id="reset-dialog" aria-labelledby="reset-title">
+    <h2 id="reset-title">Reset drawing</h2>
+    <form id="reset-form">
+      <p>This deletes every match in this drawing, including ones people have already seen. Everyone will need to spin again after you make a new drawing.</p>
+      <div class="field">
+        <label for="reset-confirm">Type <strong id="reset-phrase"></strong> to confirm</label>
+        <input id="reset-confirm" autocomplete="off" required>
+      </div>
+      <p class="error hidden" id="reset-error" role="alert"></p>
+      <div class="dialog-actions">
+        <button type="button" class="ghost" data-close>Cancel</button>
+        <button type="submit" class="primary">Reset drawing</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>
